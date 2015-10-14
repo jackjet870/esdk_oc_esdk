@@ -1,0 +1,56 @@
+<div class="container-fluid">
+    <div class="product-info-section">
+        <div class="sprite-x s-heading collapse" style="cursor: auto;">
+            <h5 class="headFont left25" ng-bind="i18n.common_term_applyDiskSpecChange_label"></h5>
+            <div class="product-info-section-subtitle"></div>
+        </div>
+        <div class="s-content" style="display: block;">
+            <div id="sspChangeDisk" class="top10 left25">
+                <tiny-formfield>
+                    <tiny-item label="label.name">
+                        <span ng-bind="diskDetail.name"></span>
+                    </tiny-item>
+
+                    <tiny-item label="label.id">
+                        <span ng-bind="diskDetail.id"></span>
+                    </tiny-item>
+
+                    <tiny-item label="label.type">
+                        <span ng-if="diskDetail.type === 'normal'" ng-bind="i18n.common_term_common_label"></span>
+                        <span ng-if="diskDetail.type === 'share'" ng-bind="i18n.common_term_share_label"></span>
+                    </tiny-item>
+
+                    <tiny-item label="label.oldSize" require="oldSize.require">
+                        <span ng-bind="diskDetail.capacityGB"></span>G
+                    </tiny-item>
+
+                    <tiny-item label="size.label" require="size.require">
+                        <div class="options createvm-cpu bottom10">
+                            <div class="types-options cpu-options selected" data-value="20">20G</div>
+                            <div class="types-options cpu-options" data-value="40">40G</div>
+                            <div class="types-options cpu-options" data-value="80">80G</div>
+                            <div class="types-options cpu-options" data-value="160">160G</div>
+                            <div class="types-options cpu-options" data-value="500">500G</div>
+                            <div class="types-options cpu-options" data-value="1000">1000G</div>
+                            <div class="types-options cpu-options" self-defined data-value="">{{i18n.common_term_custom_label}}</div>
+                            <div class="input-tip">1～65536GB</div>
+                        </div>
+                    </tiny-item>
+
+                    <tiny-item label="remark.label" labelcls="vmName.labelCls">
+                        <div class="top5">
+                            <tiny-textbox id="remark.id" value="remark.value" type="remark.type" width="remark.width" height="remark.height" validate="remark.validate">
+                            </tiny-textbox>
+                        </div>
+                    </tiny-item>
+                </tiny-formfield>
+            </div>
+        </div>
+    </div>
+
+    <div class="fm-btn-top-large">
+        <div ng-bind="unSupportChange.text" style="color: red;" class="bottom10" ng-show="unSupportChange.show"></div>
+        <tiny-button id="okBtn.id" text="okBtn.text" click="okBtn.click()" disable="okBtn.disable" class="major-btn"></tiny-button>
+        <tiny-button id="cancelBtn.id" text="cancelBtn.text" click="cancelBtn.click()"></tiny-button>
+    </div>
+</div>

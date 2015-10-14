@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+	<extension point="com.huawei.oms.log">
+		<name>esdk</name>
+		<logDir>log/oc/esdk</logDir>
+		<pattern>[%d{yyyy-MM-dd HH:mm:ss,SSS}] [%-5p] [%t] [%c :%M %L] %m%n</pattern>
+		<packages>
+			<package>com.huawei.oc.esdk</package>
+		</packages>
+	</extension>
+</plugin>

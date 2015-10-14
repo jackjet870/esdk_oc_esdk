@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.huawei.oms</groupId>
+    <artifactId>com.huawei.oms.project.all-base</artifactId>
+    <version>2.0-SNAPSHOT</version>
+  </parent>
+  <groupId>com.huawei.oms</groupId>
+  <artifactId>com.huawei.oms.project.maven-setting</artifactId>
+  <version>2.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>com.iemp.project.maven-setting</name>
+   
+  
+  
+  <modules>
+  	<module>dependency-thirdparty</module>
+  	<module>dependency-iemp</module>
+  	<module>pkg-common</module>
+  </modules>
+  
+  
+ <properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.test.skip>false</maven.test.skip>
+		<maven.test.failure.ignore>false</maven.test.failure.ignore>
+		<finalName>${project.artifactId}-${project.version}</finalName>
+		<release.dir>${basedir}/target</release.dir>
+		<jetty.version>6.1.4</jetty.version>
+		<spring.version>3.0.5.RELEASE</spring.version>
+		<slf4j.version>1.6.1</slf4j.version>
+		<java.version>1.6</java.version>
+		<junit.version>4.8.2</junit.version>
+		<com.huawei.ci.ruleset.version>1.0</com.huawei.ci.ruleset.version>
+		<ver.spring.osgi>1.2.1</ver.spring.osgi>
+		<ver.spring>3.0.5.RELEASE</ver.spring>
+		<ver.bme>3.0.2.RELEASE</ver.bme>
+		<ver.virgo>2.1.0.RELEASE</ver.virgo>
+		<ver.iemp>2.0-SNAPSHOT</ver.iemp>
+		
+	</properties>	
+</project>

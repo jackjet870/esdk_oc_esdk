@@ -1,0 +1,13 @@
+<div id="createVdcDiv" class="container-fluid">
+    <div class="tiny-step-boxset clearfix">
+        <div class="createpage-legend" ng-bind="label.createVdcTitle"></div>
+        <div id="createStoragetitle" class="createpage-legend"></div>
+        <tiny-step id="createStorageStep.id" values="createStorageStep.values" jumpable="createStorageStep.jumpable" width="createStorageStep.width"></tiny-step>
+    </div>
+    <div  class="top20">
+        <div ng-include="createStorageStep1.url" ng-show="locationInfoPage"></div>
+        <div ng-include="createStorageStep2.url" ng-show="storageQuotaPage"></div>
+        <div ng-include="createStorageStep3.url" ng-show="basicInfoPage"></div>
+        <div ng-include="createStorageStep4.url" ng-show="createStorageConfirmPage"></div>
+    </div>
+</div>

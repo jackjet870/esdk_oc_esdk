@@ -1,0 +1,257 @@
+<div class="container-fluid catalog-basic">
+    <div class="top20">
+        <div class="media">
+            <a class="pull-left">
+                <img class="media-object btn-link servicesImg" ng-src="{{orderDetail.imageUrl}}" alt="">
+            </a>
+            <div class="media-body">
+                <div style="font-size: 16px;color: #000000;">
+                    <div style="line-height: 50px;"><b ng-bind="orderDetail.orderName"></b>
+                    </div>
+                    <p ng-bind="orderDetail.description"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 位置信息 -->
+    <div class="container-fluid top10">
+        <div id="sspApprovalDiskApplyLocationArea" class="product-info-section">
+            <div class="sprite-x s-heading expand" ng-click="clickAreaHeading('sspApprovalDiskApplyLocationArea')">
+                <span class="sprite arrow"></span>
+                <h5 class="headFont" ng-bind="i18n.common_term_location_label"></h5>
+                <div class="product-info-section-subtitle">
+                    <span ng-if="detail.param.cloudInfra.lock!=='0'">
+                        <span ng-if="cloudInfra.region">{{cloudInfra.region}} | </span>
+                        <span ng-bind="az.curr.name"></span>
+                        <span ng-if="isICT"> | <span ng-bind="vpc.curr.name"></span></span>
+                        <span ng-if="az.curr.name && vm.name"> | </span>
+                    </span>
+                    <span ng-if="detail.param.cloudInfra.lock==='0'">
+                        <span ng-if="isICT">
+                            <span ng-bind="vpc.curr.name"></span>
+                            <span ng-if="vpc.curr.name && vm.name"> | </span>
+                        </span>
+                    </span>
+                    <span ng-bind="vm.name"></span>&nbsp;
+                </div>
+            </div>
+            <div class="s-content">
+                <div class="row-fluid top10 left25">
+                    <div class="span5">
+                        <tiny-formfield>
+                            <!--地域-->
+                            <tiny-item label="location.label" require="location.require" display="detail.param.cloudInfra.lock==='2' && action!=='view'">
+                                <tiny-select id="location.id" values="location.values" width="location.width" change="location.change()" validate="location.validate"></tiny-select>
+                            </tiny-item>
+                            <tiny-item label="location.label" display="detail.param.cloudInfra.lock==='1' || (action==='view' && detail.param.cloudInfra.lock!=='0')">
+                                <span ng-bind="cloudInfra.region"></span>
+                            </tiny-item>
+
+                            <!--可用分区-->
+                            <tiny-item label="az.label" require="az.require" display="detail.param.availableZone.lock==='2' && action!=='view'">
+                                <tiny-select id="az.id" values="az.values" width="az.width" change="az.change()" validate="az.validate"></tiny-select>
+                            </tiny-item>
+                            <tiny-item label="az.label" display="detail.param.availableZone.lock==='1' || (action==='view' && detail.param.availableZone.lock!=='0')">
+                                <span ng-bind="az.curr.name"></span>
+                            </tiny-item>
+
+                            <!--vpc-->
+                            <tiny-item label="vpc.label" require="vpc.require" display="isICT && detail.param.availableZone.lock==='2' && action!=='view'">
+                                <tiny-select id="vpc.id" values="vpc.values" width="vpc.width" change="az.change()" validate="vpc.validate"></tiny-select>
+                            </tiny-item>
+                            <tiny-item label="vpc.label" display="isICT && (detail.param.availableZone.lock!=='2' || action==='view')">
+                                <span ng-bind="vpc.curr.name"></span>
+                            </tiny-item>
+
+                            <!--虚拟机-->
+                            <tiny-item label="vm.label" display="detail.param.cloudInfra.lock!=='2'">
+                                <span ng-bind="vm.name"></span>
+                            </tiny-item>
+                        </tiny-formfield>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--磁盘规格-->
+    <div class="container-fluid top10">
+        <div id="sspApprovalDiskApplyConfigArea" class="product-info-section">
+            <div class="sprite-x s-heading expand" ng-click="clickAreaHeading('sspApprovalDiskApplyConfigArea')">
+                <span class="sprite arrow"></span>
+                <h5 class="headFont" ng-bind="i18n.common_term_diskSpec_label"></h5>
+                <div class="product-info-section-subtitle">
+                    <span ng-if="config.size.value">
+                        <span>{{config.size.value}}G</span>
+                        <span ng-if="config.diskType.curr || config.storageMedia.curr"> | </span>
+                    </span>
+                    <span>
+                        <span ng-if="config.diskType.curr==='normal'">{{i18n.common_term_common_label}}</span>
+                        <span ng-if="config.diskType.curr==='share'">{{i18n.common_term_share_label}}</span>
+                        <span ng-if="config.storageMedia.curr"> | </span>
+                    </span>
+                    <span ng-if="config.storageMedia.curr">{{config.storageMedia.curr==="SAN-Any" ? "Any" : config.storageMedia.curr}}</span>&nbsp;
+                </div>
+            </div>
+            <div class="s-content">
+                <div class="row-fluid create-outbox left25">
+                    <div class="left11" id="serviceApplyDiskConfig">
+                        <div class="top10">
+                            <tiny-formfield>
+                                <!--容量-->
+                                <tiny-item label="config.size.label" require="config.size.require" display="detail.param.capacity.lock==='2' && action!=='view'">
+                                    <div class="options createvm-cpu bottom10">
+                                        <div class="types-options cpu-options selected" data-value="20">20G</div>
+                                        <div class="types-options cpu-options" data-value="40">40G</div>
+                                        <div class="types-options cpu-options" data-value="80">80G</div>
+                                        <div class="types-options cpu-options" data-value="160">160G</div>
+                                        <div class="types-options cpu-options" data-value="500">500G</div>
+                                        <div class="types-options cpu-options" data-value="1000">1000G</div>
+                                        <div class="types-options cpu-options" self-defined data-value="">{{i18n.common_term_custom_label}}</div>
+                                        <div class="input-tip">1～65536GB</div>
+                                    </div>
+                                </tiny-item>
+                                <tiny-item label="config.size.label" display="detail.param.capacity.lock!=='2' || action==='view'">
+                                    <span ng-if="orderDetail.param.size"><span>{{orderDetail.param.size}}G</span></span>
+                                </tiny-item>
+
+                                <!--类型 -->
+                                <tiny-item label="config.diskType.label" require="config.diskType.require" display="detail.param.type.lock==='2' && action!=='view'">
+                                    <tiny-radiogroup id="config.diskType.id" layout="config.diskType.layout" values="config.diskType.values" change="config.diskType.change()" class="top10">
+                                    </tiny-radiogroup>
+                                </tiny-item>
+                                <tiny-item label="config.diskType.label" display="detail.param.type.lock!=='2' || action==='view'">
+                                    <span ng-if="orderDetail.param.type==='normal'" ng-bind="i18n.common_term_common_label"></span>
+                                    <span ng-if="orderDetail.param.type==='share'" ng-bind="i18n.common_term_share_label"></span>
+                                </tiny-item>
+
+                                <!--存储介质-->
+                                <tiny-item label="config.storageMedia.label" require="config.storageMedia.require" display="detail.param.mediaType.lock==='2' && action!=='view'">
+                                    <tiny-select id="config.storageMedia.id" values="config.storageMedia.values" width="config.storageMedia.width"
+                                                 change="config.storageMedia.change()" validate="config.storageMedia.validate">
+                                    </tiny-select>
+                                </tiny-item>
+                                <tiny-item label="config.storageMedia.label" display="detail.param.mediaType.lock!=='2' || action==='view'">
+                                    <span>{{orderDetail.param.mediaType === "SAN-Any" ? "Any" : orderDetail.param.mediaType}}</span>
+                                </tiny-item>
+                                <!--置备类型-->
+                                <tiny-item label="config.configType.label" display="!isICT && detail.param.configType.lock==='2' && action!=='view'">
+                                    <tiny-select id="config.configType.id" disable="config.configType.disable" values="config.configType.values" width="config.configType.width"
+                                                 change="config.configType.change()">
+                                    </tiny-select>
+                                </tiny-item>
+                                <tiny-item label="config.configType.label" display="!isICT && (detail.param.configType.lock!=='2' || action==='view')">
+                                    <span ng-if="orderDetail.param.configType==='0'" ng-bind="i18n.common_term_common_label"></span>
+                                    <span ng-if="orderDetail.param.configType==='1'" ng-bind="i18n.common_term_lazyZeroed_label"></span>
+                                    <span ng-if="orderDetail.param.configType==='2'" ng-bind="i18n.common_term_thinProv_label"></span>
+                                </tiny-item>
+
+                            </tiny-formfield>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 基本信息 -->
+    <div class="container-fluid top10">
+        <div id="sspApprovalDiskApplyBasicArea" class="product-info-section">
+            <div class="sprite-x s-heading collapse" ng-click="clickAreaHeading('sspApprovalDiskApplyBasicArea')">
+                <span class="sprite arrow"></span>
+                <h5 class="headFont" ng-bind="i18n.common_term_basicInfo_label"></h5>
+                <div class="product-info-section-subtitle">
+                    &nbsp;
+                </div>
+            </div>
+            <div id="serviceApplyDiskBaseInfo" class="s-content" style="display: block;">
+                <div class="row-fluid top10 left25">
+                    <tiny-formfield>
+                        <tiny-item label="base.applyUser.label">
+                            <span ng-bind="orderDetail.userName"></span>
+                        </tiny-item>
+                        <tiny-item label="base.currApprover.label" display="!!orderDetail.approvers && action==='view'">
+                            <span ng-bind="orderDetail.approvers"></span>
+                        </tiny-item>
+                        <tiny-item label="base.diskNum.label">
+                            <span ng-bind="orderDetail.param.count"></span>
+                        </tiny-item>
+                        <tiny-item label="base.expireTime.label">
+                            <span ng-bind="orderDetail.formatDate"></span>
+                        </tiny-item>
+                        <tiny-item label="base.name.label">
+                            <span ng-bind="orderDetail.param.name"></span>
+                        </tiny-item>
+                        <tiny-item label="base.remark.label">
+                            <span ng-bind="orderDetail.comments" title="{{orderDetail.comments}}" class="textOverflow" style="max-width: 1000px;"></span>
+                        </tiny-item>
+                    </tiny-formfield>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--审批意见-->
+    <div class="container-fluid top10" ng-if="action==='approval'">
+        <div id="sspApprovalDiskApplyApprovalArea" class="product-info-section">
+            <div class="sprite-x s-heading collapse" ng-click="clickAreaHeading('sspApprovalDiskApplyApprovalArea')">
+                <span class="sprite arrow"></span>
+                <h5 class="headFont" ng-bind="i18n.common_term_approve_button"></h5>
+                <div class="product-info-section-subtitle">
+                    &nbsp;
+                </div>
+            </div>
+            <div class="s-content" style="display: block;">
+                <div class="row-fluid top10 left25">
+                    <tiny-formfield>
+                        <tiny-item label="approvalResult.label">
+                            <tiny-radiogroup id="approvalResult.id" values="approvalResult.values" layout="approvalResult.layout"></tiny-radiogroup>
+                        </tiny-item>
+                        <tiny-item label="approvalOpinion.label">
+                            <tiny-textbox id="approvalOpinion.id" value="approvalOpinion.value" validate="approvalOpinion.validate" width="approvalOpinion.width" height="approvalOpinion.height" type="approvalOpinion.type">
+                            </tiny-textbox>
+                        </tiny-item>
+                    </tiny-formfield>
+                </div>
+            </div>
+        </div>
+
+        <div class="fm-btn-top-small">
+            <div style="color: red; margin: 10px 0" ng-show="template.showTips" ng-bind="i18n.vm_vm_create_info_noTemplate_msg"></div>
+            <tiny-button id="okBtn.id" text="okBtn.text" click="okBtn.click()" class="major-btn"></tiny-button>
+            <tiny-button id="cancelBtn.id" text="cancelBtn.text" click="cancelBtn.click()"></tiny-button>
+        </div>
+    </div>
+
+
+    <!--查看订单处理记录-->
+    <div class="container-fluid top10" ng-if="action==='view'">
+        <div id="sspApprovalDiskApplyHistoryArea" class="product-info-section">
+            <div class="sprite-x s-heading collapse" ng-click="clickAreaHeading('sspApprovalDiskApplyHistoryArea')">
+                <span class="sprite arrow"></span>
+                <h5 class="headFont" ng-bind="i18n.common_term_processRecord_label"></h5>
+                <div class="product-info-section-subtitle">
+                    &nbsp;
+                </div>
+            </div>
+            <div class="s-content" style="display: block;">
+                <div class="row-fluid top10 left25">
+                    <div ng-repeat="history in orderDetail.history" class="height27 clearfix">
+                        <span ng-bind="history.time" class="fl right10"></span>
+                        <span ng-bind="history.handleUserName" class="fl right10"></span>
+                        <span class="fl right10">{{i18n.common_term_processChain_label}}: {{history.actionView}}</span>
+                        <span ng-if="history.comments" title="{{history.comments}}" class="text-overflow maxWidth300 fl">{{i18n.service_term_suggestion_label}}: {{history.comments}}</span>
+                        <span ng-if="history.reason" title="{{history.reason}}" class="text-overflow maxWidth300 fl">{{i18n.common_term_cause_label}}: {{history.reason}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fm-btn-top-large">
+            <tiny-button ng-if="from==='myApply' && orderDetail.status ==='initialize'" id="modifyBtn.id" text="modifyBtn.text" click="modifyBtn.click()" class="major-btn"></tiny-button>
+            <tiny-button ng-if="from==='myApply' && orderDetail.status ==='initialize'" id="doCancelBtn.id" text="doCancelBtn.text" click="doCancelBtn.click()" class="major-btn"></tiny-button>
+            <tiny-button id="closeBtn.id" text="closeBtn.text" click="closeBtn.click()" class="major-btn"></tiny-button>
+        </div>
+    </div>
+</div>

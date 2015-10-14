@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.huawei.com/goku">
+  <process id="esdk.demo.ApplyVolumeProcess" name="ApplyVolumeProcess" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <userTask id="UserSubmit_usertask1" name="UserSubmit">
+      <extensionElements>
+        <activiti:taskListener event="all" class="com.huawei.goku.business.ssp.flow.toolkit.servicemgnt.listeners.UserTaskAtomListener"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="Approval_callactivity1"></sequenceFlow>
+    <callActivity id="Approval_callactivity1" name="Approval" calledElement="ApprovalProcess">
+      <extensionElements>
+        <activiti:in source="atom_result_code" target="atom_result_code"></activiti:in>
+        <activiti:in source="order_info" target="order_info"></activiti:in>
+        <activiti:in source="common_info_4_flow" target="common_info_4_flow"></activiti:in>
+        <activiti:in source="approval_type" target="approval_type"></activiti:in>
+        <activiti:out source="submit_service_request" target="submit_service_request"></activiti:out>
+        <activiti:out source="atom_result_code" target="atom_result_code"></activiti:out>
+        <activiti:out source="order_info" target="order_info"></activiti:out>
+      </extensionElements>
+    </callActivity>
+    <sequenceFlow id="flow2" sourceRef="UserSubmit_usertask1" targetRef="exclusivegateway14"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway" default="flow63"></exclusiveGateway>
+    <sequenceFlow id="flow3" name="Return" sourceRef="exclusivegateway1" targetRef="UserSubmit_usertask1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${atom_result_code.equals("1")}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="Approval_callactivity1" targetRef="exclusivegateway1"></sequenceFlow>
+    <serviceTask id="ModifyOrderStatusProcessing" name="ModifyOrderStatusProcessing" activiti:async="true" activiti:class="com.huawei.goku.business.ssp.flow.toolkit.servicemgnt.atoms.ModifyOrderStatusAtom">
+      <extensionElements>
+        <activiti:field name="status">
+          <activiti:string><![CDATA[processing]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow5" name="Accecpt" sourceRef="exclusivegateway1" targetRef="ModifyOrderStatusProcessing">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${atom_result_code.equals("0")}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow6" name="Reject" sourceRef="exclusivegateway1" targetRef="ModifyOrderStatusRejected">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${atom_result_code.equals("-1")}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="CheckModifyOrderStatusResult_exclusivegateway2" name="CheckModifyOrderStatusResult" default="ModifyOrderStatusProcessingFailed"></exclusiveGateway>
+    <sequenceFlow id="flow7" sourceRef="ModifyOrderStatusProcessing" targetRef="CheckModifyOrderStatusResult_exclusivegateway2"></sequenceFlow>
+    <sequenceFlow id="ModifyOrderStatusProcessingFailed" name="Failed" sourceRef="CheckModifyOrderStatusResult_exclusivegateway2" targetRef="ModifyOrderStatusFailed"></sequenceFlow>
+    <serviceTask id="ModifyOrderStatusRejected" name="ModifyOrderStatusRejected" activiti:async="true" activiti:class="com.huawei.goku.business.ssp.flow.toolkit.servicemgnt.atoms.ModifyOrderStatusAtom">
+      <extensionElements>
+        <activiti:field name="status">
+          <activiti:string><![CDATA[rejected]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow9" sourceRef="ModifyOrderStatusRejected" targetRef="endevent1"></sequenceFlow>
+    <serviceTask id="ModifyOrderStatusFailed" name="ModifyOrderStatusFailed" activiti:async="true" activiti:class="com.huawei.goku.business.ssp.flow.toolkit.servicemgnt.atoms.ModifyOrderStatusAtom">
+      <extensionElements>
+        <activiti:field name="status">
+          <activiti:string><![CDATA[failed]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="CheckInputParamater_servicetask2" name="CheckInputParamater" activiti:class="com.huawei.esdk.sc.flow.demo.volume.atom.CheckCreateVolumeParaAtom"></serviceTask>
+    <sequenceFlow id="ModifyOrderStatusProcessingSuccess" name="Success" sourceRef="CheckModifyOrderStatusResult_exclusivegateway2" targetRef="CheckInputParamater_servicetask2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${atom_result_code.equals("0")}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway" default="CheckInputParamaterFailed"></exclusiveGateway>
+    <sequenceFlow id="flow11" sourceRef="CheckInputParamater_servicetask2" targetRef="exclusivegateway2"></sequenceFlow>
+    <sequenceFlow id="CheckInputParamaterFailed" name="Failed" sourceRef="exclusivegateway2" targetRef="ModifyOrderStatusFailed"></sequenceFlow>
+    <serviceTask id="ReduceUsage_servicetask3" name="ReduceUsage" activiti:class="com.huawei.goku.business.ssp.flow.toolkit.vdc.atoms.ModifyQuotaUsageAtom">
+      <extensionElements>
+        <activiti:field name="inputVariableKey">
+          <activiti:string><![CDATA[update_usage_request]]></activiti:string>
+        </activiti:field>
+        <activiti:executionListener event="start" class="com.huawei.esdk.sc.flow.demo.volume.listeners.ApplyVolumeReduceUsageStartListener"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <exclusiveGateway id="exclusivegateway8" name="Exclusive Gateway" default="ReduceUsageFailed"></exclusiveGateway>
+    <sequenceFlow id="flow26" sourceRef="ReduceUsage_servicetask3" targetRef="exclusivegateway8"></sequenceFlow>
+    <sequenceFlow id="ReduceUsageSuccess" name="Success" sourceRef="exclusivegateway8" targetRef="servicetask8">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${atom_result_code.equals("0")}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="CreateVolume_servicetask2" name="CreateVolume" activiti:class="com.huawei.goku.business.ssp.flow.toolkit.volume.atoms.CreateVolumeAtom">
+      <extensionElements>
+        <activiti:field name="outputVariableKey">
+          <activiti:string><![CDATA[create_volume_response]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="inputVariableKey">
+          <activiti:string><![CDATA[create_volume_request]]></activiti:string>
+        </activiti:field>
+        <activiti:executionListener event="start" class="com.huawei.esdk.sc.flow.demo.volume.listeners.ApplyVolumeCreateVolumeStartListener"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow14" sourceRef="CreateVolume_servicetask2" targetRef="exclusivegateway24"></sequenceFlow>
+    <serviceTask id="servicetask2" name="WaitCreateVolumeTaskFinish" activiti:async="true" activiti:class="com.huawei.goku.business.ssp.flow.toolkit.task.atoms.WaitAsyncTaskAtom"></serviceTask>
+    <sequenceFlow id="flow15" sourceRef="servicetask2" targetRef="exclusivegateway3"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway" default="flow17"></exclusiveGateway>
+    <sequenceFlow id="flow16" name="Retry" sourceRef="exclusivegateway3" targetRef="servicetask2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${atom_result_code.equals("1")}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow17" name="Failed" sourceRef="exclusivegateway3" targetRef="servicetask5"></sequenceFlow>
+    <sequenceFlow id="flow31" name="Success" sourceRef="exclusivegateway3" targetRef="servicetask3">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${atom_result_code.equals("0")}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="servicetask5" name="RollbackUsage" activiti:class="com.huawei.goku.business.ssp.flow.toolkit.vdc.atoms.ModifyQuotaUsageAtom">
+      <extensionElements>
+        <activiti:field name="inputVariableKey">
+          <activiti:string><![CDATA[update_usage_request]]></activiti:string>
+        </activiti:field>
+        <activiti:executionListener event="start" class="com.huawei.esdk.sc.flow.demo.volume.listeners.ApplyVolumeRollbackUsageStartListener"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow50" sourceRef="servicetask5" targetRef="servicetask10"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway24" name="Exclusive Gateway" default="CreateVolumeFailed"></exclusiveGateway>
+    <sequenceFlow id="CreateVolumeSuccess" name="Success" sourceRef="exclusivegateway24" targetRef="servicetask2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${atom_result_code.equals("0")}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="CreateVolumeFailed" name="Failed" sourceRef="exclusivegateway24" targetRef="servicetask5"></sequenceFlow>
+    <sequenceFlow id="ReduceUsageFailed" name="Failed" sourceRef="exclusivegateway8" targetRef="ModifyOrderStatusFailed"></sequenceFlow>
+    <sequenceFlow id="flow47" sourceRef="ModifyOrderStatusFailed" targetRef="endevent1"></sequenceFlow>
+    <serviceTask id="servicetask3" name="ModifyServiceInstance" activiti:class="com.huawei.goku.business.ssp.flow.toolkit.servicemgnt.atoms.ModifyServiceInstanceAtom">
+      <extensionElements>
+        <activiti:field name="inputVariableKey">
+          <activiti:string><![CDATA[modify_service_instance_request]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="outputVariableKey">
+          <activiti:string><![CDATA[resourceIds]]></activiti:string>
+        </activiti:field>
+        <activiti:executionListener event="start" class="com.huawei.esdk.sc.flow.demo.volume.listeners.ApplyVolumeModifyServiceInstanceStartListener"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="ModifyOrderStatusSuccess" name="ModifyOrderStatusSuccess" activiti:class="com.huawei.goku.business.ssp.flow.toolkit.servicemgnt.atoms.ModifyOrderStatusAtom">
+      <extensionElements>
+        <activiti:field name="status">
+          <activiti:string><![CDATA[succeed]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow48" sourceRef="servicetask3" targetRef="exclusivegateway19"></sequenceFlow>
+    <sequenceFlow id="flow49" sourceRef="ModifyOrderStatusSuccess" targetRef="endevent1"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway14" name="Exclusive Gateway" default="flow60"></exclusiveGateway>
+    <sequenceFlow id="flow58" name="success" sourceRef="exclusivegateway14" targetRef="Approval_callactivity1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${atom_result_code.equals("0")}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="ModifyOrderStatusCancelled" name="ModifyOrderStatusCancelled" activiti:async="true" activiti:class="com.huawei.goku.business.ssp.flow.toolkit.servicemgnt.atoms.ModifyOrderStatusAtom">
+      <extensionElements>
+        <activiti:field name="status">
+          <activiti:string><![CDATA[canceled]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow60" name="Failed" sourceRef="exclusivegateway14" targetRef="ModifyOrderStatusFailed"></sequenceFlow>
+    <sequenceFlow id="flow61" name="cancel" sourceRef="exclusivegateway14" targetRef="ModifyOrderStatusCancelled">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${atom_result_code.equals("-2")}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow62" sourceRef="ModifyOrderStatusCancelled" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow63" name="Failed" sourceRef="exclusivegateway1" targetRef="ModifyOrderStatusFailed"></sequenceFlow>
+    <serviceTask id="servicetask8" name="CreateServiceInstance" activiti:class="com.huawei.goku.business.ssp.flow.toolkit.servicemgnt.atoms.AddServiceInstanceAtom">
+      <extensionElements>
+        <activiti:field name="outputVariableKey">
+          <activiti:string><![CDATA[service_instance_id]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="inputVariableKey">
+          <activiti:string><![CDATA[add_service_instance_atom_request]]></activiti:string>
+        </activiti:field>
+        <activiti:executionListener event="start" class="com.huawei.goku.business.ssp.flow.toolkit.servicemgnt.listeners.AddServiceInstanceStartListener"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <exclusiveGateway id="exclusivegateway15" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow68" sourceRef="servicetask8" targetRef="exclusivegateway15"></sequenceFlow>
+    <sequenceFlow id="CreateServiceInstanceSuccess" name="Success" sourceRef="exclusivegateway15" targetRef="CreateVolume_servicetask2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${atom_result_code.equals("0")}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="CreateServiceInstanceFailed" name="Failed" sourceRef="exclusivegateway15" targetRef="ModifyOrderStatusFailed"></sequenceFlow>
+    <serviceTask id="servicetask10" name="DeleteServiceInstance" activiti:class="com.huawei.goku.business.ssp.flow.toolkit.servicemgnt.atoms.DeleteServiceInstanceAtom">
+      <extensionElements>
+        <activiti:field name="inputVariableKey">
+          <activiti:string><![CDATA[delete_service_instance_resource_request]]></activiti:string>
+        </activiti:field>
+        <activiti:executionListener event="start" class="com.huawei.goku.business.ssp.flow.toolkit.servicemgnt.listeners.DeleteServiceInstanceStartListener"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow74" sourceRef="servicetask10" targetRef="ModifyOrderStatusFailed"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway19" name="Exclusive Gateway" default="ModifyServiceInstanceFailed"></exclusiveGateway>
+    <sequenceFlow id="ModifyServiceInstanceFailed" name="Failed" sourceRef="exclusivegateway19" targetRef="ModifyOrderStatusFailed"></sequenceFlow>
+    <sequenceFlow id="ModifyServiceInstanceSuccess" name="Success" sourceRef="exclusivegateway19" targetRef="ModifyOrderStatusSuccess">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${atom_result_code.equals("0")}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="CheckInputParamaterSuccess" name="Success" sourceRef="exclusivegateway2" targetRef="ReduceUsage_servicetask3">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${atom_result_code.equals("0")}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_esdk.demo.ApplyVolumeProcess">
+    <bpmndi:BPMNPlane bpmnElement="esdk.demo.ApplyVolumeProcess" id="BPMNPlane_esdk.demo.ApplyVolumeProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="407.0" y="253.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UserSubmit_usertask1" id="BPMNShape_UserSubmit_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="370.0" y="303.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Approval_callactivity1" id="BPMNShape_Approval_callactivity1">
+        <omgdc:Bounds height="55.0" width="105.0" x="370.0" y="471.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="402.0" y="551.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ModifyOrderStatusProcessing" id="BPMNShape_ModifyOrderStatusProcessing">
+        <omgdc:Bounds height="55.0" width="153.0" x="346.0" y="605.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="405.0" y="1760.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="CheckModifyOrderStatusResult_exclusivegateway2" id="BPMNShape_CheckModifyOrderStatusResult_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="402.0" y="684.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ModifyOrderStatusRejected" id="BPMNShape_ModifyOrderStatusRejected">
+        <omgdc:Bounds height="57.0" width="151.0" x="154.0" y="1679.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ModifyOrderStatusFailed" id="BPMNShape_ModifyOrderStatusFailed">
+        <omgdc:Bounds height="55.0" width="161.0" x="700.0" y="1680.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="CheckInputParamater_servicetask2" id="BPMNShape_CheckInputParamater_servicetask2">
+        <omgdc:Bounds height="55.0" width="116.0" x="365.0" y="750.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="402.0" y="840.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ReduceUsage_servicetask3" id="BPMNShape_ReduceUsage_servicetask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="370.0" y="925.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway8" id="BPMNShape_exclusivegateway8">
+        <omgdc:Bounds height="40.0" width="40.0" x="402.0" y="1005.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="CreateVolume_servicetask2" id="BPMNShape_CreateVolume_servicetask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="370.0" y="1240.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask2" id="BPMNShape_servicetask2">
+        <omgdc:Bounds height="55.0" width="151.0" x="347.0" y="1380.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway3" id="BPMNShape_exclusivegateway3">
+        <omgdc:Bounds height="40.0" width="40.0" x="402.0" y="1450.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask5" id="BPMNShape_servicetask5">
+        <omgdc:Bounds height="55.0" width="105.0" x="548.0" y="1443.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway24" id="BPMNShape_exclusivegateway24">
+        <omgdc:Bounds height="40.0" width="40.0" x="402.0" y="1310.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask3" id="BPMNShape_servicetask3">
+        <omgdc:Bounds height="55.0" width="129.0" x="358.0" y="1525.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ModifyOrderStatusSuccess" id="BPMNShape_ModifyOrderStatusSuccess">
+        <omgdc:Bounds height="55.0" width="165.0" x="340.0" y="1680.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway14" id="BPMNShape_exclusivegateway14">
+        <omgdc:Bounds height="40.0" width="40.0" x="404.0" y="393.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ModifyOrderStatusCancelled" id="BPMNShape_ModifyOrderStatusCancelled">
+        <omgdc:Bounds height="55.0" width="145.0" x="-10.0" y="1680.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask8" id="BPMNShape_servicetask8">
+        <omgdc:Bounds height="55.0" width="118.0" x="364.0" y="1073.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway15" id="BPMNShape_exclusivegateway15">
+        <omgdc:Bounds height="40.0" width="40.0" x="402.0" y="1161.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask10" id="BPMNShape_servicetask10">
+        <omgdc:Bounds height="55.0" width="122.0" x="540.0" y="1525.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway19" id="BPMNShape_exclusivegateway19">
+        <omgdc:Bounds height="40.0" width="40.0" x="404.0" y="1610.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="407.0" y="270.0"></omgdi:waypoint>
+        <omgdi:waypoint x="241.0" y="270.0"></omgdi:waypoint>
+        <omgdi:waypoint x="241.0" y="498.0"></omgdi:waypoint>
+        <omgdi:waypoint x="370.0" y="498.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="422.0" y="358.0"></omgdi:waypoint>
+        <omgdi:waypoint x="424.0" y="393.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="442.0" y="571.0"></omgdi:waypoint>
+        <omgdi:waypoint x="539.0" y="571.0"></omgdi:waypoint>
+        <omgdi:waypoint x="539.0" y="330.0"></omgdi:waypoint>
+        <omgdi:waypoint x="475.0" y="330.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="32.0" x="539.0" y="527.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="422.0" y="526.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="551.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="422.0" y="591.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="605.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="41.0" x="432.0" y="591.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="402.0" y="571.0"></omgdi:waypoint>
+        <omgdi:waypoint x="229.0" y="571.0"></omgdi:waypoint>
+        <omgdi:waypoint x="229.0" y="1679.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="30.0" x="326.0" y="578.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="422.0" y="660.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="684.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ModifyOrderStatusProcessingFailed" id="BPMNEdge_ModifyOrderStatusProcessingFailed">
+        <omgdi:waypoint x="442.0" y="704.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="703.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="1680.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="28.0" x="452.0" y="704.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="229.0" y="1736.0"></omgdi:waypoint>
+        <omgdi:waypoint x="229.0" y="1777.0"></omgdi:waypoint>
+        <omgdi:waypoint x="405.0" y="1777.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ModifyOrderStatusProcessingSuccess" id="BPMNEdge_ModifyOrderStatusProcessingSuccess">
+        <omgdi:waypoint x="422.0" y="724.0"></omgdi:waypoint>
+        <omgdi:waypoint x="423.0" y="750.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="43.0" x="432.0" y="724.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="423.0" y="805.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="840.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="CheckInputParamaterFailed" id="BPMNEdge_CheckInputParamaterFailed">
+        <omgdi:waypoint x="442.0" y="860.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="859.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="1680.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="28.0" x="452.0" y="860.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
+        <omgdi:waypoint x="422.0" y="980.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="1005.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ReduceUsageSuccess" id="BPMNEdge_ReduceUsageSuccess">
+        <omgdi:waypoint x="422.0" y="1045.0"></omgdi:waypoint>
+        <omgdi:waypoint x="423.0" y="1073.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="43.0" x="432.0" y="1045.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="422.0" y="1295.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="1310.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="422.0" y="1435.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="1450.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="402.0" y="1470.0"></omgdi:waypoint>
+        <omgdi:waypoint x="285.0" y="1469.0"></omgdi:waypoint>
+        <omgdi:waypoint x="285.0" y="1406.0"></omgdi:waypoint>
+        <omgdi:waypoint x="347.0" y="1407.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="26.0" x="359.0" y="1471.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="442.0" y="1470.0"></omgdi:waypoint>
+        <omgdi:waypoint x="548.0" y="1470.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="28.0" x="461.0" y="1451.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow31" id="BPMNEdge_flow31">
+        <omgdi:waypoint x="422.0" y="1490.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="1525.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="43.0" x="411.0" y="1492.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow50" id="BPMNEdge_flow50">
+        <omgdi:waypoint x="600.0" y="1498.0"></omgdi:waypoint>
+        <omgdi:waypoint x="601.0" y="1525.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="CreateVolumeSuccess" id="BPMNEdge_CreateVolumeSuccess">
+        <omgdi:waypoint x="422.0" y="1350.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="1380.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="43.0" x="423.0" y="1349.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="CreateVolumeFailed" id="BPMNEdge_CreateVolumeFailed">
+        <omgdi:waypoint x="442.0" y="1330.0"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="1329.0"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="1443.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="28.0" x="464.0" y="1311.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ReduceUsageFailed" id="BPMNEdge_ReduceUsageFailed">
+        <omgdi:waypoint x="442.0" y="1025.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="1024.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="1680.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="28.0" x="452.0" y="1025.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow47" id="BPMNEdge_flow47">
+        <omgdi:waypoint x="780.0" y="1735.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="1777.0"></omgdi:waypoint>
+        <omgdi:waypoint x="440.0" y="1777.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow48" id="BPMNEdge_flow48">
+        <omgdi:waypoint x="422.0" y="1580.0"></omgdi:waypoint>
+        <omgdi:waypoint x="424.0" y="1610.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow49" id="BPMNEdge_flow49">
+        <omgdi:waypoint x="422.0" y="1735.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="1760.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow58" id="BPMNEdge_flow58">
+        <omgdi:waypoint x="424.0" y="433.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="471.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="42.0" x="434.0" y="433.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow60" id="BPMNEdge_flow60">
+        <omgdi:waypoint x="444.0" y="413.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="412.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="1680.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="28.0" x="454.0" y="413.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow61" id="BPMNEdge_flow61">
+        <omgdi:waypoint x="404.0" y="413.0"></omgdi:waypoint>
+        <omgdi:waypoint x="62.0" y="413.0"></omgdi:waypoint>
+        <omgdi:waypoint x="62.0" y="1680.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="32.0" x="353.0" y="413.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow62" id="BPMNEdge_flow62">
+        <omgdi:waypoint x="62.0" y="1735.0"></omgdi:waypoint>
+        <omgdi:waypoint x="62.0" y="1777.0"></omgdi:waypoint>
+        <omgdi:waypoint x="405.0" y="1777.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow63" id="BPMNEdge_flow63">
+        <omgdi:waypoint x="442.0" y="571.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="570.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="1680.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="28.0" x="557.0" y="572.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow68" id="BPMNEdge_flow68">
+        <omgdi:waypoint x="423.0" y="1128.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="1161.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="CreateServiceInstanceSuccess" id="BPMNEdge_CreateServiceInstanceSuccess">
+        <omgdi:waypoint x="422.0" y="1201.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="1240.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="43.0" x="432.0" y="1201.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="CreateServiceInstanceFailed" id="BPMNEdge_CreateServiceInstanceFailed">
+        <omgdi:waypoint x="442.0" y="1181.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="1180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="1680.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="28.0" x="452.0" y="1181.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow74" id="BPMNEdge_flow74">
+        <omgdi:waypoint x="662.0" y="1552.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="1552.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="1680.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ModifyServiceInstanceFailed" id="BPMNEdge_ModifyServiceInstanceFailed">
+        <omgdi:waypoint x="444.0" y="1630.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="1630.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="1680.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="454.0" y="1630.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ModifyServiceInstanceSuccess" id="BPMNEdge_ModifyServiceInstanceSuccess">
+        <omgdi:waypoint x="424.0" y="1650.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="1680.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="43.0" x="434.0" y="1650.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="CheckInputParamaterSuccess" id="BPMNEdge_CheckInputParamaterSuccess">
+        <omgdi:waypoint x="422.0" y="880.0"></omgdi:waypoint>
+        <omgdi:waypoint x="422.0" y="925.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="43.0" x="432.0" y="880.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

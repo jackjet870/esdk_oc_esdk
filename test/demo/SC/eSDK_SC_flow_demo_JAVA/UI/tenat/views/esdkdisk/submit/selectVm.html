@@ -1,0 +1,35 @@
+<div class="ssp_apply_disk_select_vm" ng-controller="ssp.plugin.applyDisk.selectVm.ctrl">
+    <div class="clearfix bottom10">
+        <div class="pull-right">
+            <tiny-searchbox id="searchBox.id" placeholder="searchBox.placeholder" width="searchBox.width" maxlength="searchBox.maxLength" search="searchBox.search">
+            </tiny-searchbox>
+        </div>
+    </div>
+
+    <div class="clearfix">
+        <tiny-table id="vms.id" columns="vms.columns" data="vms.data" pagination-style="vms.paginationStyle" render-row="vms.renderRow" length-menu="vms.lengthMenu" display-length="vms.displayLength" total-records="vms.totalRecords" callback="vms.callback" change-select="vms.changeSelect">
+        </tiny-table>
+    </div>
+
+    <div class="text-center fm-btn-top-large">
+        <tiny-button id="okBtn.id" text="okBtn.text" click="okBtn.click()" disable="okBtn.disable" class="major-btn"></tiny-button>
+        <tiny-button id="cancelBtn.id" text="cancelBtn.text" click="cancelBtn.click()"></tiny-button>
+    </div>
+</div>
+
+<script>
+require(['app/business/ssp/controllers/plugin/disk/submit/selectVmCtrl'],
+    function(selectVmCtrl) {
+        var dep = ['ng', 'wcc', selectVmCtrl.name];
+        dep.unshift(["$provide",
+            function($provide) {
+                $provide.value("$rootElement", $(".ssp_apply_disk_select_vm"));
+            }
+        ]);
+        var $injector = angular.injector(dep);
+        $injector.invoke(function($compile, $rootScope) {
+            $compile($(".ssp_apply_disk_select_vm"))($rootScope);
+            $rootScope.$digest();
+        });
+    });
+</script>

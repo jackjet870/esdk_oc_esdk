@@ -1,0 +1,72 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+		<artifactId>com.huawei.oms.project.pkg-common</artifactId>
+		<groupId>com.huawei.oms</groupId>
+		<version>2.0-SNAPSHOT</version>
+		<relativePath>maven-setting/pkg-common</relativePath>
+	</parent>
+  
+  <groupId>com.huawei.oc.esdk</groupId>
+  <artifactId>com.huawei.oc.esdk</artifactId>
+  <version>2.1-SNAPSHOT</version>
+  <name>oc.esdk</name>
+  <description>oc.esdk</description>
+  
+  <properties>
+		<bundle.release.dir>${project.dir}/../ministry_culture/release/oc-pkg/data/ministry_culture/lib/com.huawei.esight.sdk.oc</bundle.release.dir>
+		<osgi.import>!com.google.*,!org.*,!com.huawei.modb.*,!net.*,!javax.*,!it.sauronsoftware.*,!com.jcraft.jsch</osgi.import>
+	</properties>
+  
+ <dependencies>
+		<dependency>
+			<groupId>com.huawei.oc.cbb.sdk</groupId>
+			<artifactId>com.huawei.oc.cbb.sdk</artifactId>
+			<version>2.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.huawei.oms</groupId>
+			<artifactId>com.huawei.oms.gapi.fm</artifactId>
+			<version>2.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.huawei.oms</groupId>
+			<artifactId>com.huawei.oms.framework.roa.cbb</artifactId>
+			<version>${ver.iemp}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.huawei.oms</groupId>
+			<artifactId>com.huawei.oms.framework.rpc.cbb</artifactId>
+			<version>2.0-SNAPSHOT</version>
+		</dependency>
+			
+		<dependency>
+			<groupId>com.huawei.oms</groupId>
+			<artifactId>com.huawei.oms.app.login.context</artifactId>
+			<version>2.0-SNAPSHOT</version>
+			
+		</dependency>
+		
+		<dependency>
+			<groupId>com.huawei.bme</groupId>
+			<artifactId>com.huawei.iemp.sqlserver.procedure</artifactId>
+			<version>3.2.2.GA</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.huawei.oms</groupId>
+			<artifactId>com.huawei.oms.gapi.task</artifactId>
+			<version>2.0-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.49</version>
+		</dependency>
+	</dependencies>
+</project>

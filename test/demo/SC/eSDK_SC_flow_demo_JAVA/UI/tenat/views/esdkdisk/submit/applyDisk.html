@@ -1,0 +1,189 @@
+<div class="container-fluid catalog-basic">
+    <div class="top20">
+        <div class="media">
+            <a class="pull-left">
+                <img class="media-object btn-link servicesImg" ng-src="{{detail.serviceImageUrl}}" alt="">
+            </a>
+            <div class="media-body">
+                <div style="font-size: 16px;color: #000000;">
+                    <div style="line-height: 50px;"><b ng-bind="detail.name"></b>
+                    </div>
+                    <p ng-bind="detail.description"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 位置信息 -->
+    <div class="container-fluid top10" ng-if="detail.param.cloudInfra.lock!=='2'">
+        <div id="sspApplyDiskLocationArea" class="product-info-section">
+            <div class="sprite-x s-heading collapse" ng-click="clickAreaHeading('sspApplyDiskLocationArea')">
+                <span class="sprite arrow"></span>
+                <h5 class="headFont" ng-bind="i18n.common_term_location_label"></h5>
+                <div class="product-info-section-subtitle">
+                    <span ng-if="detail.param.cloudInfra.lock==='1'">
+                        <span ng-bind="cloudInfra.region"></span> |
+                        <span ng-bind="az.curr.name"></span>
+                        <span ng-if="isICT"> | <span ng-bind="vpc.curr.name"></span></span>
+                        <span ng-if="vm.name"> | </span>
+                    </span>
+                    <span ng-if="detail.param.cloudInfra.lock==='0'">
+                        <span ng-if="isICT">
+                            <span ng-bind="vpc.curr.name"></span>
+                            <span ng-if="vm.name"> | </span>
+                        </span>
+                    </span>
+                    <span ng-bind="vm.name"></span>&nbsp;
+                </div>
+            </div>
+            <div class="s-content" style="display: block;">
+                <div class="row-fluid top10 left25">
+                    <div class="span5">
+                        <tiny-formfield>
+                            <tiny-item label="location.label" require="location.require" display="detail.param.cloudInfra.lock==='1'">
+                                <tiny-select id="location.id" values="location.values" width="location.width" change="location.change()" validate="location.validate"></tiny-select>
+                            </tiny-item>
+                            <tiny-item label="az.label" require="az.require" display="detail.param.cloudInfra.lock==='1'">
+                                <tiny-select id="az.id" values="az.values" width="az.width" change="az.change()" validate="az.validate"></tiny-select>
+                            </tiny-item>
+                            <tiny-item label="vpc.label" require="vpc.require" display="isICT && detail.param.cloudInfra.lock!=='2'">
+                                <tiny-select id="vpc.id" values="vpc.values" width="vpc.width" change="vpc.change()" validate="vpc.validate"></tiny-select>
+                            </tiny-item>
+                            <tiny-item label="vm.label">
+                                <span ng-bind="vm.name"></span>
+                                <span ng-click="vm.add()" class="btn-link left10">{{i18n.common_term_choose_label}}...</span>
+                                <span ng-click="vm.clear()" class="left10" ng-class="{'btn-link':vm.name}">{{i18n.common_term_clear_button}}</span>
+                            </tiny-item>
+                        </tiny-formfield>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--磁盘规格-->
+    <div class="container-fluid top10" ng-if="detail.param.capacity.lock!=='2' || detail.param.type.lock!=='2' || detail.param.mediaType.lock!=='2'">
+        <div id="sspApplyDiskConfigArea" class="product-info-section">
+            <div class="sprite-x s-heading expand" ng-click="clickAreaHeading('sspApplyDiskConfigArea')">
+                <span class="sprite arrow"></span>
+                <h5 class="headFont" ng-bind="i18n.common_term_diskSpec_label"></h5>
+                <div class="product-info-section-subtitle">
+                    <span ng-if="detail.param.capacity.lock!=='2'">
+                        <span>{{config.size.value}}G</span>
+                        <span ng-if="detail.param.type.lock!=='2' && config.diskType.curr || detail.param.mediaType.lock!=='2' && config.storageMedia.curr"> | </span>
+                    </span>
+                    <span ng-if="detail.param.type.lock!=='2'">
+                        <span ng-if="config.diskType.curr==='normal'">{{i18n.common_term_common_label}}</span>
+                        <span ng-if="config.diskType.curr==='share'">{{i18n.common_term_share_label}}</span>
+                        <span ng-if="config.storageMedia.curr"> | </span>
+                    </span>
+                    <span ng-if="detail.param.mediaType.lock!=='2' && config.storageMedia.curr">{{config.storageMedia.curr==="SAN-Any" ? "Any" : config.storageMedia.curr}}</span>&nbsp;
+                </div>
+            </div>
+            <div class="s-content">
+                <div class="row-fluid create-outbox left25">
+                    <div class="left11" id="serviceApplyDiskConfig">
+                        <div class="top10">
+                            <tiny-formfield>
+                                <tiny-item label="config.size.label" require="config.size.require" display="detail.param.capacity.lock==='1'">
+                                    <div class="options createvm-cpu bottom10">
+                                        <div class="types-options cpu-options selected" data-value="20">20G</div>
+                                        <div class="types-options cpu-options" data-value="40">40G</div>
+                                        <div class="types-options cpu-options" data-value="80">80G</div>
+                                        <div class="types-options cpu-options" data-value="160">160G</div>
+                                        <div class="types-options cpu-options" data-value="500">500G</div>
+                                        <div class="types-options cpu-options" data-value="1000">1000G</div>
+                                        <div class="types-options cpu-options" self-defined data-value="">{{i18n.common_term_custom_label}}</div>
+                                        <div class="input-tip">1～65536GB</div>
+                                    </div>
+                                </tiny-item>
+                                <tiny-item label="config.size.label" display="detail.param.capacity.lock==='0'">
+                                    <span>{{config.size.value}}G</span>
+                                </tiny-item>
+                                <tiny-item label="config.diskType.label" require="config.diskType.require" display="detail.param.type.lock==='1'">
+                                    <tiny-radiogroup id="config.diskType.id" layout="config.diskType.layout" values="config.diskType.values" change="config.diskType.change()">
+                                    </tiny-radiogroup>
+                                </tiny-item>
+                                <tiny-item label="config.diskType.label" display="detail.param.type.lock==='0'">
+                                    <span ng-if="config.diskType.curr==='normal'">{{i18n.common_term_common_label}}</span>
+                                    <span ng-if="config.diskType.curr==='share'">{{i18n.common_term_share_label}}</span>
+                                </tiny-item>
+                                <tiny-item label="config.storageMedia.label" require="config.storageMedia.require" display="detail.param.mediaType.lock==='1'">
+                                    <tiny-select id="config.storageMedia.id" values="config.storageMedia.values" width="config.storageMedia.width"
+                                                 change="config.storageMedia.change()" validate="config.storageMedia.validate">
+                                    </tiny-select>
+                                </tiny-item>
+                                <tiny-item label="config.storageMedia.label" display="detail.param.mediaType.lock==='0'">
+                                    <span>{{config.storageMedia.curr==="SAN-Any" ? "Any" : config.storageMedia.curr}}</span>
+                                </tiny-item>
+                                <!--置备类型-->
+                                <tiny-item label="config.configType.label" display="!isICT && detail.param.configType.lock==='1'">
+                                    <tiny-select id="config.configType.id" values="config.configType.values" disable="config.configType.disable" width="config.configType.width"
+                                                 change="config.configType.change()">
+                                    </tiny-select>
+                                </tiny-item>
+                                <tiny-item label="config.configType.label" display="!isICT && detail.param.configType.lock==='0'">
+                                    <span ng-if="config.configType.curr==='0'" ng-bind="i18n.common_term_common_label"></span>
+                                    <span ng-if="config.configType.curr==='1'" ng-bind="i18n.common_term_lazyZeroed_label"></span>
+                                    <span ng-if="config.configType.curr==='2'" ng-bind="i18n.common_term_thinProv_label"></span>
+                                </tiny-item>
+                            </tiny-formfield>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 基本信息 -->
+    <div class="container-fluid top10">
+        <div id="sspApplyDiskBasicArea" class="product-info-section">
+            <div class="sprite-x s-heading collapse" ng-click="clickAreaHeading('sspApplyDiskBasicArea')">
+                <span class="sprite arrow"></span>
+                <h5 class="headFont" ng-bind="i18n.common_term_basicInfo_label"></h5>
+                <div class="product-info-section-subtitle">
+                    &nbsp;
+                </div>
+            </div>
+            <div id="serviceApplyDiskBaseInfo" class="s-content" style="display: block;">
+                <div class="row-fluid top10 left25">
+                    <div class="span5">
+                        <tiny-formfield>
+                            <tiny-item label="base.diskNum.label" require="base.diskNum.require">
+                                <tiny-spinner id="base.diskNum.id" value="base.diskNum.value" min="base.diskNum.min" max="base.diskNum.max" step="base.diskNum.step" width="base.diskNum.width"></tiny-spinner>
+                            </tiny-item>
+                            <tiny-item label="base.expireTime.label" require="base.expireTime.require" class="clearfix">
+                                <div class="fl">
+                                    <tiny-datetime id="base.expireTime.id" type="base.expireTime.type" min-date="base.expireTime.minDate"
+                                                   disable="base.expireTime.disable" show-clear="false" width="base.expireTime.width"
+                                                   date-format="base.expireTime.dateFormat" time-format="base.expireTime.timeFormat"
+                                                   default-date="base.expireTime.defaultDate" default-time="base.expireTime.defaultTime"></tiny-datetime>
+                                </div>
+                                <span class="fl line-height25" style="margin: 6px 0 0 10px;">
+                                    <tiny-checkbox id="base.neverExpire.id" checked="base.neverExpire.checked" change="base.neverExpire.change()" text="base.neverExpire.text"></tiny-checkbox>
+                                </span>
+                            </tiny-item>
+                        </tiny-formfield>
+                    </div>
+                    <div class="span6">
+                        <tiny-formfield>
+                            <tiny-item label="base.name.label">
+                                <tiny-textbox id="base.name.id" value="base.name.value" extend-function="base.name.extendFunction" validate="base.name.validate" width="base.name.width"></tiny-textbox>
+                            </tiny-item>
+                            <tiny-item label="base.remark.label">
+                                <tiny-textbox id="base.remark.id" value="base.remark.value" type="base.remark.type" width="base.remark.width" height="base.remark.height" validate="base.remark.validate">
+                                </tiny-textbox>
+                            </tiny-item>
+                        </tiny-formfield>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="clear: left;" class="fm-btn-top-large">
+        <tiny-button id="okBtn.id" text="okBtn.text" click="okBtn.click()" class="major-btn"></tiny-button>
+        <tiny-button id="cancelBtn.id" text="cancelBtn.text" click="cancelBtn.click()"></tiny-button>
+    </div>
+
+</div>

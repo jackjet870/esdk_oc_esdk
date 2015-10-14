@@ -1,0 +1,116 @@
+<div class="container-fluid">
+    <div class="container-fluid top10">
+        <div id="sspApprovalDiskChangeBasicArea" class="product-info-section">
+            <div class="sprite-x s-heading collapse" ng-click="clickAreaHeading('sspApprovalDiskChangeBasicArea')">
+                <span class="sprite arrow"></span>
+                <h5 class="headFont" ng-bind="i18n.common_term_applyDiskSpecChange_label"></h5>
+                <div class="product-info-section-subtitle">
+                    &nbsp;
+                </div>
+            </div>
+            <div class="s-content" style="display: block;">
+                <div class="row-fluid top10 left25">
+                    <tiny-formfield>
+                        <tiny-item label="label.applyUser">
+                            <span ng-bind="orderDetail.userName"></span>
+                        </tiny-item>
+
+                        <tiny-item label="label.currApprover" display="!!orderDetail.approvers && action==='view'">
+                            <span ng-bind="orderDetail.approvers"></span>
+                        </tiny-item>
+
+                        <tiny-item label="label.name">
+                            <span ng-bind="diskDetail.name"></span>
+                        </tiny-item>
+
+                        <tiny-item label="label.id">
+                            <span ng-bind="diskDetail.id"></span>
+                        </tiny-item>
+
+                        <tiny-item label="label.type">
+                            <span ng-if="diskDetail.type === 'normal'" ng-bind="i18n.common_term_common_label"></span>
+                            <span ng-if="diskDetail.type === 'share'" ng-bind="i18n.common_term_share_label"></span>
+                        </tiny-item>
+
+                        <tiny-item label="label.oldSize" require="oldSize.require">
+                            <span ng-bind="orderDetail.param.oldSize"></span>
+                        </tiny-item>
+
+                        <tiny-item label="label.size" require="size.require">
+                            <span ng-bind="orderDetail.param.size"></span>
+                        </tiny-item>
+
+                        <tiny-item label="label.remark" labelcls="vmName.labelCls">
+                            <span ng-bind="orderDetail.comments"></span>
+                        </tiny-item>
+                    </tiny-formfield>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--审批-->
+    <div ng-if="action==='approval'">
+        <div class="container-fluid top10">
+            <div id="sspApprovalDiskChangeApproval" class="product-info-section">
+                <div class="sprite-x s-heading collapse" ng-click="clickAreaHeading('sspApprovalDiskChangeApproval')">
+                    <span class="sprite arrow"></span>
+                    <h5 class="headFont" ng-bind="i18n.common_term_approve_button"></h5>
+                    <div class="product-info-section-subtitle">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="s-content" style="display: block;">
+                    <div class="row-fluid top10 left25">
+                        <tiny-formfield labelwidth="vmName.labelWidth">
+                            <tiny-item label="approvalResult.label">
+                                <tiny-radiogroup id="approvalResult.id" values="approvalResult.values" spacing="approvalResult.spacing"></tiny-radiogroup>
+                            </tiny-item>
+                            <tiny-item label="approvalOpinion.label">
+                                <tiny-textbox id="approvalOpinion.id" value="approvalOpinion.value" validate="approvalOpinion.validate" width="approvalOpinion.width"
+                                              height="approvalOpinion.height" type="approvalOpinion.type">
+                                </tiny-textbox>
+                            </tiny-item>
+                        </tiny-formfield>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fm-btn-top-large">
+            <tiny-button id="okBtn.id" text="okBtn.text" click="okBtn.click()" class="major-btn"></tiny-button>
+            <tiny-button id="cancelBtn.id" text="cancelBtn.text" click="cancelBtn.click()"></tiny-button>
+        </div>
+    </div>
+
+    <!--处理记录-->
+    <div class="container-fluid top10" ng-if="action==='view'">
+        <div class="container-fluid">
+            <div id="sspApprovalDiskChangeHistory" class="product-info-section">
+                <div class="sprite-x s-heading collapse" ng-click="clickAreaHeading('sspApprovalDiskChangeHistory')">
+                    <span class="sprite arrow"></span>
+                    <h5 class="headFont" ng-bind="i18n.common_term_processRecord_label"></h5>
+                    <div class="product-info-section-subtitle">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="s-content" style="display: block;">
+                    <div class="row-fluid top10 left25">
+                        <div ng-repeat="history in orderDetail.history" class="height27 clearfix">
+                            <span ng-bind="history.time" class="fl right10"></span>
+                            <span ng-bind="history.handleUserName" class="fl right10"></span>
+                            <span class="fl right10">{{i18n.common_term_processChain_label}}: {{history.actionView}}</span>
+                            <span ng-if="history.comments" title="{{history.comments}}" class="text-overflow maxWidth300 fl">{{i18n.service_term_suggestion_label}}: {{history.comments}}</span>
+                            <span ng-if="history.reason" title="{{history.reason}}" class="text-overflow maxWidth300 fl">{{i18n.common_term_cause_label}}: {{history.reason}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fm-btn-top-large">
+            <tiny-button ng-if="from==='myApply' && orderDetail.status ==='initialize'" id="modifyBtn.id" text="modifyBtn.text" click="modifyBtn.click()" class="major-btn"></tiny-button>
+            <tiny-button ng-if="from==='myApply' && orderDetail.status ==='initialize'" id="doCancelBtn.id" text="doCancelBtn.text" click="doCancelBtn.click()" class="major-btn"></tiny-button>
+            <tiny-button id="closeBtn.id" text="closeBtn.text" click="closeBtn.click()"></tiny-button>
+        </div>
+    </div>
+</div>

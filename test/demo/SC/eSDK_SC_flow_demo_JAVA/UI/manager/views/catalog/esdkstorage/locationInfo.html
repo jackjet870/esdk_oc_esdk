@@ -1,0 +1,54 @@
+<div>
+    <div id="createStoragelocation" class="create-page-distance">
+
+        <div >
+            <div style="margin-top: 0;" class="panel_title fl">{{i18n.common_term_location_label}}：</div>
+            <div style="padding-left: 60px;">
+                <tiny-radiogroup id="locationInfo.locationLock.id" values="locationInfo.locationLock.values" spacing="locationInfo.locationLock.spacing" layout="locationInfo.locationLock.layout" change="locationInfo.locationLock.change()"></tiny-radiogroup>
+            </div>
+            <div class="horizontal_line" style="clear:both;"></div>
+            <div class="top20">
+                <tiny-formfield>
+                    <div>
+                        <tiny-item label="locationInfo.location.label" require="locationInfo.location.require">
+                            <div class="fl">
+                                <tiny-select id="locationInfo.location.id" disable="locationInfo.location.disable" values="locationInfo.location.values" width="locationInfo.location.width" change='locationInfo.location.change()' validate='locationInfo.location.validate'>
+                                </tiny-select>
+                            </div>
+                        </tiny-item>
+                    </div>
+
+                    <div>
+                        <tiny-item label="locationInfo.vpc.label" require="locationInfo.vpc.require">
+                            <div class="fl">
+                                <tiny-select id="locationInfo.vpc.id" disable="locationInfo.vpc.disable" values="locationInfo.vpc.values" width="locationInfo.vpc.width" validate='locationInfo.vpc.validate'>
+                                </tiny-select>
+                            </div>
+                        </tiny-item>
+                    </div>
+                    <tiny-item class="fm-btn-top-small">
+                        <tiny-button id="locationInfo.perBtn.id"
+                                     text="locationInfo.perBtn.text"
+                                     display="locationInfo.perBtn.display"
+                                     click="locationInfo.perBtn.click()"></tiny-button>
+                        <tiny-button id="locationInfo.nextBtn.id" text="locationInfo.nextBtn.text"
+                                     click="locationInfo.nextBtn.click()" class="major-btn"></tiny-button>
+                        <tiny-button id="locationInfo.cancelBtn.id" text="locationInfo.cancelBtn.text"
+                                     click="locationInfo.cancelBtn.click()"></tiny-button>
+                    </tiny-item>
+                </tiny-formfield>
+            </div>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    .onmouseover {
+        cursor: pointer;
+        background:#1e90ff;
+    }
+    .directorySelect{
+        width: 200px;
+        height: 100px;
+        background: #ffffff;
+    }
+</style>

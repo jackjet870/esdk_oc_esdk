@@ -1,0 +1,163 @@
+<ul class="panel-list">
+    <li class="panel-item">
+        <div class="panel-title clearfix">
+            <span class="panel-title-label fl" ng-bind="i18n.common_term_basicInfo_label"></span>
+        </div>
+        <div class="panel-content">
+            <tiny-formfield>
+                <tiny-item label="createStorageConfirmInfo.serviceName.label"
+                           ng-bind="createStorageConfirmInfo.serviceName.value">
+                    {{createStorageConfirmInfo.serviceName.value}}
+                </tiny-item>
+                <tiny-item label="createStorageConfirmInfo.serviceCatalog.label"
+                           ng-bind="createStorageConfirmInfo.serviceCatalog.value">
+                    {{createStorageConfirmInfo.serviceCatalog.value}}
+                </tiny-item>
+                <tiny-item label="baseInfo.logo.label">
+                    <img ng-src="{{baseInfo.logo.curLogo}}" ng-if="params.iconId" class="upload-icon-size upload-icon-image"/>
+                </tiny-item>
+                <tiny-item label="createStorageConfirmInfo.description.label"
+                           ng-bind="createStorageConfirmInfo.description.value">
+                    {{createStorageConfirmInfo.description.value}}
+                </tiny-item>
+                <tiny-item label="createStorageConfirmInfo.apptype.label"
+                           ng-bind="createStorageConfirmInfo.apptype.value">
+                    {{createStorageConfirmInfo.apptype.value}}
+                </tiny-item>
+            </tiny-formfield>
+        </div>
+    </li>
+    <li class="panel-item">
+        <div class="panel-title clearfix">
+            <span class="panel-title-label fl" ng-bind="i18n.common_term_section_label"></span>
+                <span class="panel-title-ridiogrouplab">
+                    <tiny-radiogroup id="createStorageConfirmInfo.storageAreaappType.id"
+                                     class="panel-title-ridiogroup"
+                                     values="createStorageConfirmInfo.storageAreaappType.values"
+                                     spacing="createStorageConfirmInfo.storageAreaappType.spacing"
+                                     layout="createStorageConfirmInfo.storageAreaappType.layout"></tiny-radiogroup>
+                </span>
+        </div>
+        <div class="panel-content">
+            <tiny-formfield>
+                <tiny-item label="createStorageConfirmInfo.area.label" ng-bind="createStorageConfirmInfo.area.value">
+                    {{createStorageConfirmInfo.area.value}}
+                </tiny-item>
+            </tiny-formfield>
+        </div>
+    </li>
+    <li class="panel-item">
+        <div class="panel-title clearfix">
+            <span class="panel-title-label fl" ng-bind="i18n.resource_term_Azs_label"></span>
+                <span class="panel-title-ridiogrouplab">
+                    <tiny-radiogroup id="createStorageConfirmInfo.storageAzappType.id"
+                                     class="panel-title-ridiogroup"
+                                     values="createStorageConfirmInfo.storageAzappType.values"
+                                     spacing="createStorageConfirmInfo.storageAzappType.spacing"
+                                     layout="createStorageConfirmInfo.storageAzappType.layout"></tiny-radiogroup>
+                </span>
+        </div>
+        <div class="panel-content">
+            <tiny-formfield>
+                <tiny-item label="createStorageConfirmInfo.az.label" ng-bind="createStorageConfirmInfo.az.value">
+                    {{createStorageConfirmInfo.az.value}}
+                </tiny-item>
+            </tiny-formfield>
+        </div>
+    </li>
+    <li class="panel-item">
+        <div class="panel-title clearfix">
+            <span class="panel-title-label fl" ng-bind="i18n.common_term_storagecCapacity_label"></span>
+                <span class="panel-title-ridiogrouplab">
+                    <tiny-radiogroup id="createStorageConfirmInfo.storageSizeappType.id"
+                                     class="panel-title-ridiogroup"
+                                     values="createStorageConfirmInfo.storageSizeappType.values"
+                                     spacing="createStorageConfirmInfo.storageSizeappType.spacing"
+                                     layout="createStorageConfirmInfo.storageSizeappType.layout"></tiny-radiogroup>
+                </span>
+        </div>
+        <div class="panel-content">
+            <tiny-formfield>
+                <tiny-item label="createStorageConfirmInfo.storageSize.label"
+                           ng-bind="createStorageConfirmInfo.storageSize.value">
+                    {{createStorageConfirmInfo.storageSize.value}}
+                </tiny-item>
+            </tiny-formfield>
+        </div>
+    </li>
+    <li class="panel-item">
+        <div class="panel-title clearfix">
+            <span class="panel-title-label fl" ng-bind="i18n.common_term_storageType_label"></span>
+                <span class="panel-title-ridiogrouplab">
+                    <tiny-radiogroup id="createStorageConfirmInfo.storageTypeappType.id"
+                                     class="panel-title-ridiogroup"
+                                     values="createStorageConfirmInfo.storageTypeappType.values"
+                                     spacing="createStorageConfirmInfo.storageTypeappType.spacing"
+                                     layout="createStorageConfirmInfo.storageTypeappType.layout"></tiny-radiogroup>
+                </span>
+        </div>
+        <div class="panel-content">
+            <tiny-formfield>
+                <tiny-item label="createStorageConfirmInfo.storageType.label"
+                           ng-bind="createStorageConfirmInfo.storageType.value">
+                    {{createStorageConfirmInfo.storageType.value}}
+                </tiny-item>
+            </tiny-formfield>
+        </div>
+    </li>
+    <!--置备类型-->
+    <li class="panel-item" ng-if="cloudType== 'IT'">
+        <div class="panel-title clearfix">
+            <span class="panel-title-label fl" ng-bind="i18n.common_term_setMode_label"></span>
+                <span class="panel-title-ridiogrouplab">
+                    <tiny-radiogroup id="createStorageConfirmInfo.storageConfigApplyType.id"
+                                     class="panel-title-ridiogroup"
+                                     values="createStorageConfirmInfo.storageConfigApplyType.values"
+                                     spacing="createStorageConfirmInfo.storageConfigApplyType.spacing"
+                                     layout="createStorageConfirmInfo.storageConfigApplyType.layout"></tiny-radiogroup>
+                </span>
+        </div>
+        <div class="panel-content">
+            <tiny-formfield>
+                <tiny-item label="createStorageConfirmInfo.storageConfigType.label"
+                           ng-bind="createStorageConfirmInfo.storageConfigType.value">
+                </tiny-item>
+            </tiny-formfield>
+        </div>
+    </li>
+    <li class="panel-item">
+        <div class="panel-title clearfix">
+            <span class="panel-title-label fl" ng-bind="i18n.common_term_storageMedia_label"></span>
+                <span class="panel-title-ridiogrouplab">
+                    <tiny-radiogroup id="createStorageConfirmInfo.storageMediaappType.id"
+                                     class="panel-title-ridiogroup"
+                                     values="createStorageConfirmInfo.storageMediaappType.values"
+                                     spacing="createStorageConfirmInfo.storageMediaappType.spacing"
+                                     layout="createStorageConfirmInfo.storageMediaappType.layout"></tiny-radiogroup>
+                </span>
+        </div>
+        <div class="panel-content">
+            <tiny-formfield>
+                <tiny-item label="createStorageConfirmInfo.storageMedia.label"
+                           ng-bind="createStorageConfirmInfo.storageMedia.value">
+                    {{createStorageConfirmInfo.storageMedia.value}}
+                </tiny-item>
+            </tiny-formfield>
+        </div>
+    </li>
+    <li>
+        <tiny-formfield>
+            <tiny-item>
+                <div class="fm-btn-top-small">
+                    <tiny-button id="createStorageConfirmInfo.preBtn.id" text="createStorageConfirmInfo.preBtn.text"
+                                 click="createStorageConfirmInfo.preBtn.click()"></tiny-button>
+                    <tiny-button id="createStorageConfirmInfo.addBtn.id" text="createStorageConfirmInfo.addBtn.text"
+                                 click="createStorageConfirmInfo.addBtn.click()" class="major-btn"></tiny-button>
+                    <tiny-button id="createStorageConfirmInfo.cancelBtn.id"
+                                 text="createStorageConfirmInfo.cancelBtn.text"
+                                 click="createStorageConfirmInfo.cancelBtn.click()"></tiny-button>
+                </div>
+            </tiny-item>
+        </tiny-formfield>
+    </li>
+</ul>

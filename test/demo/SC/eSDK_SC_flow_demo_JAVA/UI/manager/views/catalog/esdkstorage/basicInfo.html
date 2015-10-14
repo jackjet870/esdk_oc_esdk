@@ -1,0 +1,57 @@
+<div id="createStoageBasicPage">
+    <div class="create-page-distance">
+        <tiny-formfield>
+                <tiny-item label="baseInfo.name.label" require="baseInfo.name.require">
+                    <tiny-textbox width="baseInfo.name.width" id="baseInfo.name.id" value="params.appName" validate="baseInfo.name.validate"></tiny-textbox>
+                </tiny-item>
+            <tiny-item label="baseInfo.directory.label" require="baseInfo.directory.require">
+                <tiny-select mode="baseInfo.directory.mode" width="baseInfo.directory.width" id="baseInfo.directory.id" values="baseInfo.directory.values" validate="baseInfo.directory.validate"></tiny-select>
+            </tiny-item>
+
+            <tiny-item label="baseInfo.logo.label" require="baseInfo.logo.require">
+                <div class="dropdown">
+                    <div class="upload-icon-size">
+                        <img ng-src="{{baseInfo.logo.curLogo}}" ng-click='baseInfo.logo.toggle($event)'
+                             class="upload-icon-size upload-icon-image">
+                    </div>
+                    <a href="javascript:void 0;" ng-click='baseInfo.logo.upload()' class='left10' ng-bind="i18n.common_term_uploadLocalPic_button"></a>
+                    <ul class="clearfix upload-icons dropdown-menu"
+                        ng-if="icons.length"
+                        ng-style="{width:65 * icons.length}">
+                        <li ng-repeat="icon in icons" class="fl pr upload-icons-item upload-icon-size">
+                            <img ng-src="{{icon.imageUrl}}"
+                                 class="fl pr upload-icon-size upload-icon-image"
+                                 ng-click="baseInfo.logo.switchIcon(icon)"/>
+                            <span href="javascript:void 0;" title="{{i18n.common_term_delete_button}}" ng-if="icon.type == 'user'"
+                                  ng-click="baseInfo.logo.deleteIcon(icon,$index)"
+                                  class="upload-icon-del small-icon"></span>
+                        </li>
+                    </ul>
+                </div>
+            </tiny-item>
+
+            <tiny-item label="baseInfo.description.label" require="baseInfo.description.require">
+                <tiny-textbox id="baseInfo.description.id" value="params.description" width="baseInfo.description.width" height="baseInfo.description.height" type="baseInfo.description.type" validate="baseInfo.description.validate" error-msg="baseInfo.description.errorMsg"></tiny-textbox>
+            </tiny-item>
+            <tiny-item class="fm-btn-top-small">
+                <tiny-button id="baseInfo.preBtn.id" text="baseInfo.preBtn.text"
+                             click="baseInfo.preBtn.click()"></tiny-button>
+                <tiny-button id="baseInfo.nextBtn.id" text="baseInfo.nextBtn.text"
+                             click="baseInfo.nextBtn.click()" class="major-btn"></tiny-button>
+                <tiny-button id="baseInfo.cancelBtn.id" text="baseInfo.cancelBtn.text"
+                             click="baseInfo.cancelBtn.click()"></tiny-button>
+            </tiny-item>
+        </tiny-formfield>
+    </div>
+</div>
+<style type="text/css">
+    .onmouseover {
+        cursor: pointer;
+        background:#1e90ff;
+    }
+    .directorySelect{
+        width: 200px;
+        height: 100px;
+        background: #ffffff;
+    }
+</style>
